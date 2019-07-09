@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+       <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+       <title>设备列表页面菜单</title>
+       <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+       <style>
+           .empty{ text-align: center; padding: 120px 0; }
+           #header{
+               text-align: center; background-color: #81a9c3; color: #fff;
+               width: 100%;
+           }
+           #header h1{
+               font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+               margin-bottom: 20px;
+           }
+           #table{
+             padding-left:50px;
+           }
+           .table-bordered tr{
+             text-align: center;
+           }
+           .table-bordered th{
+             text-align: center;
+           }
+       </style>
+   </head>
+   <body>
+     <div id="header">
+         <h1>欢迎进入资产管理系统</h1>
+     </div>
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script>
+    apiready = function() {
+      //获取传来的数据
+     var product = new Array();
+     product = api.pageParam.product;
+// alert(product);
+    var NVNavigationBar = api.require('NVNavigationBar');
+          NVNavigationBar.open({
+              rect: {
+                   x: 0,
+                   y: 40,
+                   w: api.frameWidth,
+                   h: 43 //导航栏的高度
+              },
+             styles: {
+                   orientation: 'horizontal',
+                   bg: '#e8e8e8',
+                   bgAlpha: 1,
+                   font: {
+                     size: 16,
+                     sizeSelected: 17,
+                     color: '#000',
+                     colorSelected: '#81a9c3',
+                     alpha: 1
+                   },
+                   itemSize: {
+                       w: 100,
+                       h: 40  //菜单的高度
+                   }
+             },
+              items: [{
+                 title: '设备详情',
+                 bg: '#fff',
+                 bgSelected: 'widget://image/heng.png',//设置下划线背景图片
+                 size:{
+                   w:120,
+                   h:40 //菜单的高度
+                 }
+                 },{
+                 title: '维修记录',
+                 bg: '#fff',
+                 bgSelected: 'widget://image/heng.png',
+                 size:{
+                   w:120,
+                   h:40
+                 }
+                 },{
+                 title: '设备图片',
+                 bg: '#fff',
+                 bgSelected: 'widget://image/heng.png',
+                 size:{
+                   w:120,
+                   h:40
+                 }
+                 }],
+                 selectedIndex: 0,
+                 fixedOn: api.frameName,
+                 id: 'first'
+          }, function(ret, err) {
+              // api.alert({msg:JSON.stringify(ret)});
+              // if(ret.eventType=="click" && ret.index==0){
+                  api.openFrame({
+                           name: 'pro_detail',
+                           url: 'widget://html/pro_detail.html',
+                           pageParam:{
+                             product:product
+                           },
+                           rect: {
+                             x: 0,
+                             y: 100,
+                             w: 'auto',
+                             h: api.winHeight-20
+                           }
+                  })
+              // }
+              if(ret.eventType=="click" && ret.index==1){
+                  api.openFrame({
+                           name: 'main',
+                           url: 'widget://html/main.html',
+                           rect: {
+                             x: 0,
+                             y: 100,
+                             w: 'auto',
+                             h: api.winHeight-20
+                           }
+                  })
+              }
+              if(ret.eventType=="click" && ret.index==2){
+                  api.openFrame({
+                           name: 'pro_img',
+                           url: 'widget://html/pro_img.html',
+                           pageParam:{
+                             product:product
+                           },
+                           rect: {
+                             x: 0,
+                             y: 100,
+                             w: 'auto',
+                             h: api.winHeight-20
+                           }
+                  })
+              }
+              });
+    }
+
+
+</script>
+</html>

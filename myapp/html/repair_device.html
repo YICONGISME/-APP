@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+       <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+       <title>报修页面</title>
+       <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+       <style>
+           .empty{ text-align: center; padding: 120px 0; }
+           #header{
+               text-align: center; background-color: #81a9c3; color: #fff;
+               width: 100%;
+           }
+           #header h1{
+               font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+           }
+           #table{
+             padding-left:50px;
+           }
+           .table-hover tr{
+             text-align: center;
+           }
+           .table-hover th{
+             text-align: center;
+           }
+           .btn {
+             width:200px;
+            margin-left: 25%;
+            margin-top: -20px;
+            margin-bottom: 20px;
+           }
+
+       </style>
+    </head>
+    <body>
+      <div id="header">
+          <h1>故障报修</h1>
+      </div>
+      <form action="" method="get" id="form">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope=""  width="100px">属性</th>
+              <th scope="" >详情</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">设备编号</th>
+              <td><input type="text" class="form-control" name="code" id="code" >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">设备名称</th>
+              <td><input type="text" class="form-control" name="name" id="name" >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">型号规格</th>
+              <td><input type="text" class="form-control" name="model"  id="model">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">出厂号</th>
+              <td><input type="text" class="form-control" name="fac_num" id="fac_num" >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">出厂日期</th>
+              <td >
+                <input type="text" class="form-control" name="born_time" id="born_time" onclick="bornTime()">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">存放地点</th>
+              <td><input type="text" class="form-control" name="position" id="position" >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">管理人</th>
+              <td><input type="text" class="form-control" name="owner" id="owner"  >
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">国别</th>
+              <td scope="row">
+                <div class="input-group mb-3">
+                  <select class="custom-select" name="country" id="country" >
+                    <!-- <option selected ></option> -->
+                      <option value="中国" >中国</option>
+                      <option value="美国">美国</option>
+                      <option value="日本">日本</option>
+                      <option value="荷兰">荷兰</option>
+                  </select>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">生产厂</th>
+              <td scope="row">
+                <div class="input-group mb-3">
+                    <select class="custom-select" name="factory"  id="factory">
+                        <option value="戴尔">联想</option>
+                        <option value="联想">戴尔</option>
+                        <option value="浪潮">浪潮</option>
+                        <option value="曙光">曙光</option>
+                    </select>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+      <button type="submit" class="btn btn-primary" onclick="repair()">提交</button>
+
+    </body>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/jquery.min.js"></script>
+
+    <script>
+
+    var actionDialog;
+   apiready = function(){
+
+}//apiready
+    //使用表单序列化提交没有成功，无法把json字符串转换成json对象，因为api.ajax只能传json对象
+    // $(function(){
+    //   $("button").click(function(){
+    //     var form = $("form").serialize();//json字符串
+    //
+    //       repair(form);
+    //   });
+    // });
+    //---------------------选择日期函数------------------
+    function bornTime(){
+        actionDialog = api.require('UIActionDialog');
+        actionDialog.datePicker({
+            styles:{
+                navigator:{
+                    divider:'#696969',
+                    dividerSize:0.3
+                },
+                leftBtn:{
+                    title:'取消'
+                },
+                rightBtn:{
+                    title:'确定'
+                }
+            },
+            mask:'rgba(0,0,0,0.6)',
+            selected:'2019-5-29',
+            animation: true
+        },function(ret) {
+            console.log(JSON.stringify(ret));
+            if (ret.eventType == 'left') {
+                actionDialog.close();
+            } else if (ret.eventType == 'right'){
+              $api.byId('born_time').value= ret.selected;
+              actionDialog.close();
+            } else if (ret.eventType == 'mask') {
+                actionDialog.hide();
+            }
+        });
+    }
+
+    //--------------------------报修提交函数-------------------------
+     function repair(){
+      //获取表单提交的数据
+      var code = $api.val($api.byId('code'));
+      var name = $api.val($api.byId('name'));
+      var model = $api.val($api.byId('model'));
+      var fac_num = $api.val($api.byId('fac_num'));
+      var born_time = $api.val($api.byId('born_time'));
+      var position = $api.val($api.byId('position'));
+      var owner = $api.val($api.byId('owner'));
+      var country = $api.val($api.byId('country'));
+      var factory = $api.val($api.byId('factory'));
+      if(code==''||name==''||model==''||born_time==''||fac_num==''||position==''||owner==''||country==''||factory==''){
+        alert('都不能为空');
+        return false;
+      }
+      // 提交JSON数据
+      api.ajax({
+          url: 'http://39.96.60.172:8083/insert.php',
+          method: 'get',
+          headers: {
+              'Content-Type': 'application/json;charset=utf-8'
+          },
+          data: {
+              body: {
+                  name: name,
+                  code: code,
+                  model: model,
+                  fac_num:fac_num,
+                  born_time:born_time,
+                  position:position,
+                  country:country,
+                  factory:factory,
+                  owner:owner
+                  // data:form
+              }
+          }
+      }, function(ret, err) {
+          if (ret) {
+              api.alert({ msg: JSON.stringify("提交成功") });
+              window.location.reload();
+              // api.alert({ msg: JSON.stringify(ret) });
+          } else {
+              api.alert({ msg: JSON.stringify("提交失败") });
+          }
+      });
+     }
+</script>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+       <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+       <title>报修页面</title>
+       <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+       <style>
+           .empty{ text-align: center; padding: 120px 0; }
+           #header{
+               text-align: center; background-color: #81a9c3; color: #fff;
+               width: 100%;
+           }
+           #header h1{
+               font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+           }
+           #table{
+             padding-left:50px;
+           }
+           .table-hover tr{
+             text-align: center;
+           }
+           .table-hover th{
+             text-align: center;
+           }
+           .btn {
+             width:200px;
+            margin-left: 25%;
+            margin-top: -20px;
+            margin-bottom: 20px;
+           }
+
+       </style>
+    </head>
+    <!-- <body>
+    </body> -->
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script>
+    apiready = function(){
+
+        var UIListView = api.require('UIListView');//导入UILISTView模块 首页列表
+
+        //首页列表
+       UIListView.open({
+         rect: {
+           x: 0,
+           y: 0,//模块起始点的位置（x,y）
+           w: api.winWidth,
+           h: api.frameHeight-110  //高度不能是全屏，会占用下面菜单栏的位置使其失去作用
+         },
+         data: [{
+           uid: '1001',
+           imgPath: 'widget://image/menu.png',
+           title: '设备列表',
+           //subTitle: '子标题，说明文字',
+           remark: '总共台设备',
+           icon: 'widget://image/device.png'
+         }, {
+           uid: '1002',
+           imgPath: 'widget://image/setting.png',
+           title: '添加设备',
+           //subTitle: '子标题，说明文字',
+           remark: '添加',
+           icon: 'widget://image/device.png'
+         }, {
+           uid: '1003',
+           imgPath: 'widget://image/wrench-fill.png',
+           title: '故障报修',
+           //subTitle: '子标题，说明文字',
+           remark: '报修',
+           icon: 'widget://image/device.png'
+         }
+       ],
+         styles: {
+           borderColor: '#e6e6e6',
+           item: {
+             bgColor: 'white',
+             activeBgColor: '#F5F5F5',
+             height: 55.0,
+             imgWidth: 40,
+             imgHeight: 40,
+             imgCorner: 4,
+             placeholderImg: '',
+             titleSize: 18.0,
+             titleColor: '#000',
+             subTitleSize: 12.0,
+             subTitleColor: '#e6e6e6',
+             remarkColor: '#cdcdcd',
+             remarkSize: 16,
+             remarkIconWidth: 30
+           }
+         },
+         fixedOn: api.frameName,
+       }, function(ret, err) {
+         if (ret) {
+             //设备列表
+             if(ret.eventType=="clickContent" && ret.index==0){
+               //调用查询所有设备函数
+                 search_all();
+                 // alert(pro_all);
+                 //不从这里打开，因为数据传输慢，会导致product没有定义
+               /*  api.openWin({
+                          name: 'pro_list',
+                          url: 'widget://html/sear_detail1.html',
+                          pageParam:{
+                            product:pro_all
+                          },
+                          rect: {
+                            x: 0,
+                            y: 100,
+                            w: 'auto',
+                            h: api.winHeight-20
+                          }
+                 })*/
+             }
+           //添加设备
+           if(ret.eventType=="clickContent" && ret.index==1){
+
+               api.openWin({
+                        name: 'add_device',
+                        url: 'widget://html/add_device.html',
+                        rect: {
+                          x: 0,
+                          y: 100,
+                          w: 'auto',
+                          h: api.winHeight-20
+                        }
+               })
+           }
+           //故障报修
+           if(ret.eventType=="clickContent" && ret.index==2){
+
+               api.openWin({
+                        name: 'repair_device',
+                        url: 'widget://html/repair_device.html',
+
+                        rect: {
+                          x: 0,
+                          y: 100,
+                          w: 'auto',
+                          h: api.winHeight-20
+                        }
+               })
+           }
+         } else {
+           alert(JSON.stringify(err));
+         }
+       });  //open -function -end
+} //apiready end
+
+// ------------------------------搜索全部产品-----------------------
+function search_all(){
+  api.ajax({
+      url: 'http://39.96.60.172:8083/index.php',
+      method: 'get',
+      dataType:"json",
+      data: {
+          values: {
+               //json对象
+          }
+      }
+  }, function(ret, err) {
+      if (ret) {
+        var product = new Array(); //定义数组
+        //遍历服务器返回的数组数据
+        for(var i=0;i < ret.length; i++)
+        {
+             product[i] = ret[i];
+        }
+        // api.alert({ msg: JSON.stringify(product) });
+            //打开搜索出来的设备列表页面
+          api.openWin({
+              name: 'sear_detail1',
+              url: './sear_detail1.html',
+              pageParam: {
+                  product : product //代替传递具体的字段 而是传递全部的数据
+              }
+          });
+
+      } else {
+          api.alert({ msg: JSON.stringify(err) });
+      }
+  });
+}
+    </script>
+    </html>

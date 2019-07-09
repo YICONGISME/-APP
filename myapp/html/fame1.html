@@ -1,0 +1,231 @@
+<!doctype html>
+<!-- app的首页 -->
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>二维码主页面</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style type="text/css">
+        html,
+        body {
+            height: 100%;
+        }
+        .header {
+            background-color: #4CABFF;
+            color: #fff;
+            width: 100%;
+            height: 44px;
+            font-size: 16px;
+            line-height: 44px;
+            text-align: center;
+        }
+        .button-normal {
+            width: 240px;
+            height: 50px;
+            margin: 45% auto auto;
+            background-color: #E04B4C;
+            color: #fff;
+            font-size: 16px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .button-custom {
+            width: 240px;
+            height: 50px;
+            margin: 50px auto auto;
+            background-color: #E04B4C;
+            color: #fff;
+            font-size: 16px;
+            line-height: 50px;
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航条 -->
+    <div id="header" class="header">APICloud 二维码功能开发 DEMO</div>
+    <div class="button-normal" tapmode="" onclick="fnOpenNormalQRCode();">打开普通二维码扫描</div>
+    <div class="button-custom" tapmode="" onclick="fnOpenCustomQRCode();">打开自定义样式的二维码扫描</div>
+
+   <div class="btn" tapmode="" id="code"></div>
+
+   <!-- <div class="btn" tapmode="" id="code" onclick="detail();">button</div> -->
+
+</body>
+<script type="text/javascript" src="../script/api.js"></script><!--注意路径问题-->
+<script type="text/javascript">
+// $api.byId('code').innerHTML=111;
+
+    var FNScanner;  // 二维码模块对象
+    apiready = function() {
+        var eHeader = $api.byId('header');
+        $api.fixStatusBar(eHeader); // 顶部header的沉浸式修复
+        FNScanner = api.require('FNScanner');
+        api.addEventListener({ // 通知当前本模块app进入后台。此时模块会进行一些资源的暂停存储操作，防止照相机回来之后黑屏
+            name:'pause'
+        }, function(ret, err){
+            FNScanner.onPause();
+        });
+        api.addEventListener({ //通知当前本模块app进入回到前台。此时模块会进行一些资源的恢复操作，防止照相机回来之后黑屏
+            name:'resume'  //重新开始
+        }, function(ret, err){
+            FNScanner.onResume();
+        });
+    };
+
+    function fnOpenNormalQRCode() {  // 打开默认的二维码模块
+      FNScanner.openScanner({
+          autorotation: true
+      }, function(ret, err) {
+          if (ret) {
+              if(ret.eventType == "success") { // 模块扫描成功事件
+                var code = $api.byId('code');
+                code.innerHTML = ret.content;
+                detail();
+                //使用传参的方式，更加简单
+                // detail(ret.content);
+              //     api.alert({
+              //         title: '扫描结果：',
+              //         msg: ret.content,
+              //         buttons : ['查看详情']
+              //     }, function(ret, err){
+              //           // alert(JSON.stringify(ret.content));
+              //         $api.byId('code').innerHTML = ret.content;
+              //
+              //           // if (ret.buttonIndex == 1) {
+              //           //   detail();//执行详情操作
+              //           // }
+              //      });
+          //  alert(JSON.stringify(ret.content));//79454786453
+
+                    // if (ret.buttonIndex == 1) {
+                    //   detail();//执行详情操作
+                    // }
+              //       api.openWin({
+              //          name: 'adm_login',
+              //          url: './adm_login.html',
+              //          pageParam: {
+              //              name: user,
+              //              pass:pass
+              //         }
+              // });
+                // $api.byId('code').value = ret.content ;
+              }
+          } else {
+              alert(JSON.stringify(err));
+          }
+      });
+    }
+
+function detail(){
+
+  var code = $api.byId('code').innerHTML;
+  // alert(code);
+    // console.log('111');
+  api.ajax({
+      url: 'http://39.96.60.172:8083/index.php',
+      // url:'http://www.app.com/app.php',
+      method: 'get',
+       dataType:"json",
+      data: {
+          values: {
+              code: code //json对象
+          }
+      }
+  }, function(ret, err) {
+    // alert('hi');
+      if (ret) {
+          // api.alert({
+          //   title:'提示',
+          //   msg:'成功'
+          // },function(ret,err){
+          //
+          // });
+            var code=JSON.stringify(ret.code);
+            var name=JSON.stringify(ret.name);
+            var position=JSON.stringify(ret.position);
+            api.openWin({
+                name: 'detail',
+                url: './html/detail.html',
+                pageParam: {
+                    code : code,
+                    name : name,
+                    position : position
+                }
+            });
+      } else {
+
+
+          api.alert({ msg: JSON.stringify(err) });
+          // alert('failed');
+          // alert(JSON.stringify(ret.body.name));
+      }
+  });
+}
+
+
+
+    function fnOpenCustomQRCode() {  // 打开自定义样式的二维码功能模块
+        FNScanner.openView({  // 打开二维码页面
+            rect: { //扫描器的位置及尺寸，在安卓平台宽高比须跟屏幕宽高比一致，否则摄像头可视区域的图像可能出现少许变形；w和h属性最好使用api.winWidth和api.winHeight,这样不会导致变形，也不会出现手机必须要在一定的距离上才能扫描出来的现象
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            rectOfInterest: { // （可选项）在扫码区域上的扫码识别区域，仅在iOS平台有效
+                x: (api.winWidth-250)/2,
+                y: (api.winHeight-250)/2,
+                w: 250,
+                h: 250
+            },
+            //sound: 'widget://res/qrcode.wav'  // 自定义设置扫描后的声音
+        }, function(ret, err) {
+            if (ret) {
+                if ('show' == ret.eventType) { //模块加载展现事件
+                }
+                else if(ret.eventType == "success") { // 模块扫描成功事件
+                    fnCloseCustomQRCode();
+                    api.alert({
+                        title: '扫描结果',
+                        msg: ret.content,
+                    }, function(ret, err){
+
+
+                    });
+                } else {
+                    alert(JSON.stringify(err));
+                }
+            }
+        })
+        //打开自定义的frame页面
+        setTimeout(function(){
+          fnOpenSubFrame();
+        },500);
+    }
+    function fnCloseCustomQRCode() {
+        api.closeFrame({ // 关闭扫描样式页
+            name: 'qrcode'
+        });
+        FNScanner.closeView(); // 关闭二维码模块
+    }
+    function fnOpenSubFrame() { // 打开二维码自定义的frame样式框页面
+        api.openFrame({
+            name: 'qrcode',
+            url: 'qrcode.html',
+            rect: {  // 采用 margin相对布局
+                marginTop: 0,
+                h: 'auto',
+                w: 'auto'
+            },
+            bounces: false,
+            bgColor: 'rgba(0,0,0,0)',
+        });
+    }
+
+</script>
+</html>

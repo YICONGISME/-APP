@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<!-- 扫描条形码功能页面-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>二维码自定义样式页面</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            background-color: rgba(0,0,0,0);
+        }
+        .header {
+            position: relative;
+            background-color: #4CABFF;
+            color: #fff;
+            width: 100%;
+            height: 44px;
+            font-size: 16px;
+            line-height: 44px;
+            text-align: center;
+        }
+        .header-item-left {
+        	  position: absolute;
+        		left: 0;
+        		bottom: 0;
+        		width: 44px;
+        		height: 44px;
+        		background: url(../image/back.png) no-repeat center center;
+        		background-size: 22px 22px;
+        }
+        .qrcode-box {
+            width: 250px;
+            height: 250px;
+            position: absolute;
+        }
+        .qrcode-box:after {
+            -webkit-animation: rotateAnim linear 3.68s infinite;
+            animation: rotateAnim linear 3.68s infinite;
+            content: '';
+            position: absolute;
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #d8be26;
+        }
+        /*二维码上下移动的扫描横线*/
+        @keyframes rotateAnim {
+            from {
+                top: 0;
+            }
+            to {
+                top: 100%;
+            }
+        }
+        @-webkit-keyframes rotateAnim {
+            from {
+                top: 0;
+            }
+            to {
+                top: 100%;
+            }
+        }
+        /*二维码扫描框的四角*/
+        .qrcode-box span {
+            width: 14px;
+            height: 14px;
+            position: absolute;
+            border: 2px solid #1fa2ff;
+        }
+        .qrcode-box span:nth-child( 1) {
+            left: 0;
+            top: 0;
+            border-width: 2px 0 0 2px;
+        }
+        .qrcode-box span:nth-child( 2) {
+            right: 0;
+            top: 0;
+            border-width: 2px 2px 0 0;
+        }
+        .qrcode-box span:nth-child( 3) {
+            right: 0;
+            bottom: 0;
+            border-width: 0 2px 2px 0;
+        }
+        .qrcode-box span:nth-child( 4) {
+            left: 0;
+            bottom: 0;
+            border-width: 0 0 2px 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 头部导航条 -->
+    <div id="header" class="header">
+        <div class="header-item-left" tapmode="" onclick="goBack();"></div>
+        自定义样式 二维码扫描页面
+    </div>
+    <!-- 二维码扫描框 -->
+    <div id="qrcode-box" class="qrcode-box">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+        var eHeader = $api.byId('header');
+        $api.fixStatusBar(eHeader); // 顶部header的沉浸式修复
+        fnShowQRScannerBox();
+    }
+    function fnShowQRScannerBox() { // 根据屏幕实际宽度修正二维码扫描框的位置并加载显示
+        var eQRCodeBox = $api.byId('qrcode-box');
+        var top = (api.winHeight - 250)/2;
+        var left = (api.winWidth - 250)/2;
+        $api.css(eQRCodeBox, 'top: '+top+'px;left:'+left+'px;display:block;');
+    }
+    //给返回箭头绑定一个事件
+    function goBack() {
+      //在指定 window 或者 frame 中执行脚本
+        api.execScript({
+            name: 'root',//表示首页
+            script: 'fnCloseCustomQRCode();'//执行js代码，关闭窗口
+        });
+    }
+</script>
+
+</html>

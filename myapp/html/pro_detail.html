@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+   <html>
+   <head>
+       <meta charset="UTF-8">
+       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+       <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+       <title>扫描条形码显示出来的表格页面</title>
+       <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/style.css"/>
+       <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+       <style>
+           .empty{ text-align: center; padding: 120px 0; }
+           #header{
+               text-align: center; background-color: #81a9c3; color: #fff;
+               width: 100%;
+           }
+           #header h1{
+               font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+           }
+           #table{
+             padding-left:50px;
+           }
+           .table-bordered tr{
+             text-align: center;
+           }
+           .table-bordered th{
+             text-align: center;
+           }
+       </style>
+   </head>
+   <body>
+     <!-- <div id="header">
+         <h1>欢迎进入资产管理系统</h1>
+     </div> -->
+
+     <div>
+       <table class="table table-bordered">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col" width="150px" >属性</th>
+              <th scope="col">详情</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">条形码</th>
+              <td id="code"></td>
+            </tr>
+            <tr>
+              <th scope="row">名称</th>
+              <td id="name"></td>
+            </tr>
+            <tr>
+              <th scope="row">位置</th>
+              <td id="position"></td>
+            </tr>
+            <tr>
+              <th scope="row">生产日期</th>
+              <td id="born_time"></td>
+            </tr>
+            <tr>
+              <th scope="row">所属类</th>
+              <td id="type"></td>
+            </tr>
+            <tr>
+              <th scope="row">所属者</th>
+              <td id="owner"></td>
+            </tr><tr>
+              <th scope="row">外借</th>
+              <td id="borrowed"></td>
+            </tr>
+            <tr>
+              <th scope="row">报修</th>
+              <td id="repair"></td>
+            </tr>
+          </tbody>
+        </table>
+     </div>
+   </body>
+
+   <script type="text/javascript" src="../script/api.js"></script>
+   <script>
+   apiready = function(){
+
+      //获取传来的数据
+     var product = new Array();
+     product = api.pageParam.product;
+    //  alert(product);
+     //判断是扫描的产品还是搜索的产品，两者的字段名不一样
+      if(product.subTitle == undefined){
+        var code = product.code;
+      }else{
+        var code = product.subTitle;
+      }
+
+      if(product.title == undefined){
+        var name = product.name;
+      }else{
+        var name = product.title;
+      }
+      var position = product.position;
+      var born_time = product.born_time;
+      var type = product.type;
+      var owner = product.owner;
+      var borrowed = product.borrowed;
+      var repair = product.repair;
+
+
+      //渲染在页面上
+      $api.byId('code').innerHTML += code;
+      $api.byId('name').innerHTML += name;
+      $api.byId('position').innerHTML += position;
+      $api.byId('born_time').innerHTML += born_time;
+      $api.byId('type').innerHTML += type;
+      $api.byId('owner').innerHTML += owner;
+      $api.byId('borrowed').innerHTML += borrowed;
+      if(repair == 0){
+        $api.byId('repair').innerHTML += "无报修";
+      }else{
+        $api.byId('repair').innerHTML += "已报修";
+      }
+    }
+
+   </script>
+   </html>

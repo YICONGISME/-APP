@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>设备添加页面</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
+
+    <style type="text/css">
+    html,body{
+        height: 100%;
+        background-color: #fff;
+    }
+    body{
+      margin:0;
+    }
+    #wrap{
+        height: 100%;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-flex-flow: column;
+               flex-flow: column;
+    }
+    #header{
+        text-align: center;
+        background-color: #81a9c3;
+        color: #fff;
+        width: 100%;
+    }
+    #header h1{
+        font-size: 20px; height: 44px; line-height: 44px; margin: 0em; color: #fff;
+        padding-left: 70px;
+    }
+    #container{
+      color: #2c2c2c;
+      margin-top: 44px;
+    }
+  .dl{
+    width: 100%;
+    height: 34px;
+  }
+    input{
+        width: 60%;
+        border: 1px solid #81a9c3;
+        height: 30px;
+        float: right;
+        /*margin-top: 1px;*/
+        margin-right: 5px;
+        border-radius: 10px;
+        padding-left:10px;
+
+    }
+    span{
+      width: 40%;
+    }
+    span.devicename{
+      width: 40%;
+      color: #2c2c2c;
+      text-align: center;
+      padding:50px 25px 0px 25px;
+
+    }
+    </style>
+</head>
+<body>
+ <div id="wrap">
+        <div id="header">
+            <h1>
+              设备添加
+              <span style="float:right;width:50px;font-size:16px;" onclick="submit();">提交</span>
+            </h1>
+        </div>
+
+       <div id="container">
+
+              <div class="dl" id="dl1">
+                <span class="devicename">设备编号</span>
+                <input type="text" id="code">
+              </div>
+              <br/>
+              <!-- <hr style="color:e6e6e6;"> -->
+              <div class="dl" id="dl2">
+                <span class="devicename">设备名称</span>
+                <input type="text" id="name">
+              </div>
+              <br/>
+              <div class="dl" id="dl3">
+                <span class="devicename">型号规格</span>
+                <input type="text" id="model">
+              </div>
+              <br/>
+              <div  class="dl" id="dl4">
+                <span class="devicename">出厂号</span>
+                <input type="text" id="fac_num">
+              </div>
+              <br/>
+              <div class="dl" id="dl5">
+                <span class="devicename">存放地点</span>
+                <input type="text" id="position">
+              </div>
+              <br/>
+            <div class="dl" id="dl6">
+              <span class="devicename">管理人</span>
+              <input type="text" id="owner">
+            </div>
+            <br/>
+            <div class="dl" id="dl7">
+              <span class="devicename">国别</span>
+              <select class="info2" id="country" style="
+              width: 63%;
+              border: 1px solid #81a9c3;
+              height: 35px;
+              float: right;
+              /*margin-top: 1px;*/
+              margin-right: 5px;
+              border-radius: 10px;
+              padding-left:10px;
+              ">
+                <option value="中国">中国</option>
+                <option value="美国">美国</option>
+                <option value="英国">英国</option>
+                <option value="德国">德国</option>
+              </select>
+              <!-- <input type="text" name="lastname"> -->
+            </div>
+            <br/>
+            <div class="dl" id="dl8">
+              <span class="devicename">生产商</span>
+              <select class="info2" id="factory" style="
+              width: 63%;
+              border: 1px solid #81a9c3;
+              height: 35px;
+              float: right;
+              /*margin-top: 1px;*/
+              margin-right: 5px;
+              border-radius: 10px;
+              padding-left:10px;
+              ">
+                <option value="戴尔">戴尔</option>
+                <option value="联想">联想</option>
+                <option value="酷派">酷派</option>
+              </select>
+              <!-- <input type="text" name="lastname"> -->
+            </div>
+
+</div>
+
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+/*-------------点击提交触发的事件---------------------------------------*/
+function submit(){
+            var code = $api.val($api.byId('code'));
+            var name = $api.val($api.byId('name'));
+            var model = $api.val($api.byId('model'));
+            var fac_num = $api.val($api.byId('fac_num'));
+            var position = $api.val($api.byId('position'));
+            var owner = $api.val($api.byId('owner'));
+            var country = $api.val($api.byId('country'));
+            var factory = $api.val($api.byId('factory'));
+            if(code==''||name==''||model==''||fac_num==''||position==''||owner==''||country==''||factory==''){
+              alert('都不能为空');
+              return false;
+            }
+
+            // 提交JSON数据
+            api.ajax({
+                url: 'http://39.96.60.172:8083/add_device.php',
+                method: 'get',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                data: {
+                    body: {
+                        code: code,
+                        name: name,
+                        model: model,
+                        fac_num:fac_num,
+                        position:position,
+                        owner:owner,
+                        country:country,
+                        factory:factory
+                        // data:form
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    api.alert({ msg: JSON.stringify("添加设备成功") });
+                    window.location.reload();
+                } else {
+                    api.alert({ msg: JSON.stringify("添加设备失败") });
+                }
+            });
+           }
+
+
+
+
+</script>
+</html>
